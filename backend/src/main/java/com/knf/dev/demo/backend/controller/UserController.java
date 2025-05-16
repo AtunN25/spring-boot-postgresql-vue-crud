@@ -23,7 +23,7 @@ import com.knf.dev.demo.backend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://161.132.68.35:8085")
 public class UserController {
 
     @Autowired
