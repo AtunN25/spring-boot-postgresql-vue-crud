@@ -1,0 +1,48 @@
+version: '3.8'
+
+networks:
+  spring-net:
+    external: true  # Usamos la red que ya creaste
+
+services:
+  pgdb:
+    image: postgres:15
+    container_name: pgdb
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: frank
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    networks:
+      - spring-net
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  spring-backend:
+    build: ./backend  
+    container_name: spring-backend
+    depends_on:
+      - pgdb
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pgdb:5432/postgres
+      SPRING_DATASOURCE_USERNAME: frank
+      SPRING_DATASOURCE_PASSWORD: 123456
+    networks:
+      - spring-net
+
+  vue-frontend:
+    build: ./frontend
+    container_name: vue-frontend
+    depends_on:
+      - spring-backend
+    ports:
+      - "8085:80"
+    networks:
+      - spring-net
+
+volumes:
+  pgdata:
